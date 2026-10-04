@@ -1,4 +1,5 @@
 # Not Contagion, Just Time — Experiment Scripts
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE)
 
 Companion code for: *Not Contagion, Just Time: Temporal Calibration Fatigue in LLM Agents*
 
@@ -26,3 +27,13 @@ export DEEPSEEK_API_KEY="sk-..."  # DeepSeek V4
 
 Checkpoint JSON files and result JSON files available upon request.
 Total: 100,500 API calls across GPT-4o, DeepSeek V4 Pro, DeepSeek V4 Flash.
+
+## License
+
+Code is MIT-licensed ([LICENSE](LICENSE)). Not Contagion, Just Time releases the experiment scripts, results, and figures under
+[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+
+GitHub's license detector reports this repository as `NOASSERTION` because it reads
+a single SPDX id per repository and this one carries two. The split is deliberate:
+the code stays permissively licensed so it can be reused, and the research material
+stays attributable so a citation is required.
