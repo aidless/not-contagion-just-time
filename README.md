@@ -28,6 +28,28 @@ export DEEPSEEK_API_KEY="sk-..."  # DeepSeek V4
 Checkpoint JSON files and result JSON files available upon request.
 Total: 100,500 API calls across GPT-4o, DeepSeek V4 Pro, DeepSeek V4 Flash.
 
+## Reproducibility notes
+
+- **Environment**: CI runs on Python 3.12 (`.github/workflows/ci.yml`); install
+  dependencies with `pip install -r requirements.txt`
+  (numpy / scipy / matplotlib / pytest).
+- **No PRNG seeding**: the experiment state is driven by live LLM API responses
+  (scripts send a per-call `temperature`), so re-runs are not bit-identical.
+  "Seeded miscalibration" in the code refers to planting an overconfident agent
+  persona in the group, not a random seed.
+- **Checkpoints**: `cc_full_experiment.py` writes `cc_full_ckpt_{cid}.json`
+  after every repetition and resumes from it on restart; the final aggregate
+  (e.g. `cc_full_phase1_30reps.json`) is the input to `cc_analysis_figures.py`.
+
+## Data availability
+
+This repository contains **scripts only**. No result JSONs, checkpoint files,
+or figures are committed — the experiment outputs live in the author's working
+environment (environment-bound) and are available from the author on request.
+All figures can be regenerated from those JSONs via
+`python cc_analysis_figures.py <result>.json` after re-running the scripts
+with the API keys above.
+
 ## License
 
 Code is MIT-licensed ([LICENSE](LICENSE)). Not Contagion, Just Time releases the experiment scripts, results, and figures under
