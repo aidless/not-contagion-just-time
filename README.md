@@ -50,6 +50,27 @@ All figures can be regenerated from those JSONs via
 `python cc_analysis_figures.py <result>.json` after re-running the scripts
 with the API keys above.
 
+## What this does and does not prove
+
+**Proves:** the experiment harness is runnable — each script takes `--reps` /
+`--phase`, writes a checkpoint after every repetition (`cc_full_ckpt_{cid}.json`),
+and resumes from it on restart (`--resume`). The figure generator
+(`cc_analysis_figures.py`) consumes the final aggregate JSON and produces the
+reported plots.
+
+**Does not prove:** the headline numbers themselves. The "100,500 API calls"
+total and every ECE / calibration figure in the companion paper are **not
+recomputable from this repository** — the result JSONs, checkpoints, and figures
+are environment-bound and not committed. Re-running the scripts here yields
+*new* data (the LLM answers differ on every call because the state is driven by
+live API responses, not a PRNG seed). This repo is the **reproduction harness**,
+not the evidence archive.
+
+**Why the number can't be derived from code:** the per-call counts depend on
+runtime question sets, retry/rate-limit handling, and model answers, none of
+which are committed. The honest statement is: the harness is here, the data is
+not.
+
 ## License
 
 Code is MIT-licensed ([LICENSE](LICENSE)). Not Contagion, Just Time releases the experiment scripts, results, and figures under
