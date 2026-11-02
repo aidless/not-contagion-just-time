@@ -41,6 +41,25 @@ Total: 100,500 API calls across GPT-4o, DeepSeek V4 Pro, DeepSeek V4 Flash.
   after every repetition and resumes from it on restart; the final aggregate
   (e.g. `cc_full_phase1_30reps.json`) is the input to `cc_analysis_figures.py`.
 
+### 复现结构（可从代码复算的真实数字）
+
+| 数字 | 复算来源 | 值 |
+|---|---|---|
+| 实验脚本数 | `git ls-files "*.py"` | 7 |
+| GSM8K 题库 | `cc_full_experiment.py:28-64` | 30 题 |
+| 每 agent 每轮题数 | `cc_full_experiment.py:27` | N_Q = 5 |
+| 条件数 | `cc_full_experiment.py:87-91` | C1-C4（4） |
+| C1 配置 | `:88` | 3 agent / 10 round / 无 sync / 无 seed |
+| C2-C4 配置 | `:89-91` | 3/20、5/10、5/20，均 SYNC+seed |
+
+这是**设计结构**（可复算），不是性能/准确度数字——那些（ECE、100,500 API calls）不在本仓。
+
+### Fail-closed 声明（真实机制）
+
+- **Rate-limit 即中止**：403 且 `calls > 500` 时**保存并中止**（`RuntimeError("RATE_LIMIT")`，`cc_full_experiment.py:243-245`），打印"clean reps saved"后退出——**不静默填假数据**。
+- **Checkpoint 断点续跑**：每 rep 写 `cc_full_ckpt_{cid}.json`，`start_rep = len(all_ece)` 从断点续跑（`cc_full_experiment.py:183-199`），`--resume` 幂等。
+- **Fig 3 不冒充实测**：`cc_analysis_figures.py:164-167` 明示 reliability 曲线是 **schematic**（示意图），非真实数据。
+
 ## Data availability
 
 This repository contains **scripts only**. No result JSONs, checkpoint files,
