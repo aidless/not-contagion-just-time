@@ -1,7 +1,13 @@
 # Not Contagion, Just Time — Experiment Scripts
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE-DATA)
 
 Companion code for: *Not Contagion, Just Time: Temporal Calibration Fatigue in LLM Agents*
+
+**What this is.** Scripts only. No result JSONs, checkpoints or figures are committed — the paper's 100,500 API calls were run in an environment-bound working directory.
+
+**Verified how.** Nothing in this repo is quantitatively re-checkable offline; the outputs are available from the author on request. Treat this repo as the method, not the evidence.
+
+**Run it.** `export DMXAPI_KEY=... DEEPSEEK_API_KEY=...` then `python cc_full_experiment.py`; `python cc_analysis_figures.py <result>.json` regenerates each figure from an external result file.
 
 ## Setup
 
