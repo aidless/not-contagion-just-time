@@ -1,4 +1,6 @@
 # Not Contagion, Just Time — Experiment Scripts
+
+[![CI](https://github.com/aidless/not-contagion-just-time/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/not-contagion-just-time/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE-DATA)
 
 Companion code for: *Not Contagion, Just Time: Temporal Calibration Fatigue in LLM Agents*
