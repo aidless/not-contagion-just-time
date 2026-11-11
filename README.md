@@ -135,6 +135,47 @@ All figures can be regenerated from those JSONs via
 `python cc_analysis_figures.py <result>.json` after re-running the scripts
 with the API keys above.
 
+## U1 re-verified entry points (live run 2026-11-11)
+
+All commands below were executed for this pass; exit codes are from this run.
+
+| Live check | Result | Source |
+|---|---|---|
+| `python3 cc_full_experiment.py --help` | exit 0, prints phase/reps/conditions/dry-run options | this pass |
+| `python3 pilot_cc_v3.py --help` | exit 0, prints `--reps` | this pass |
+| `python3 -m py_compile` on 7 scripts | exit 0 (cc_ablations.py, cc_analysis_figures.py, cc_full_experiment.py, cc_rebuttal_experiments.py, cc_revision_experiments.py, cc_t1_nosync.py, pilot_cc_v3.py) | this pass |
+
+Design constants re-derived from the committed sources (not from memory):
+
+| Constant | Value | Source (path:line) |
+|---|---|---|
+| N_Q (cc_full_experiment.py) | `N_Q = 5` (questions per agent per round) | `cc_full_experiment.py:27` |
+| C1 condition dict | `n_agents=3, n_rounds=10, sync=False, seeded_miscal=False` | `cc_full_experiment.py:88` |
+| --reps default 30 (cc_full) | 30 | `cc_full_experiment.py:332` |
+| N_Q (cc_ablations.py) | `N_Q = 5` | `cc_ablations.py:16` |
+| N_Q (cc_t1_nosync.py) | `N_Q = 5` | `cc_t1_nosync.py:24` |
+| --reps default 30 (cc_t1_nosync) | 30 | `cc_t1_nosync.py:161` |
+| Committed experiment scripts | 7 | live `glob cc_*.py` + `pilot_cc_v3.py` |
+
+Per-row meanings: `N_Q = 5` is questions per agent per round; the `C1` dict is
+`n_agents=3, n_rounds=10, sync=False, seeded_miscal=False`; `--reps` defaults to 30.
+
+**NOT YET MEASURED in this pass** (and not fillable from this repository at all):
+the 100,500-call runs, any ECE / MCE / Brier / accuracy aggregate, p-values, or
+effect sizes — no result JSON, checkpoint, or figure is committed. Re-running
+requires paid API keys (`DMXAPI_KEY`, `DEEPSEEK_API_KEY`); see
+`README.md` sections *What this doesn't claim* and *Data availability*.
+
+**Reproduce the live checks above**:
+
+```bash
+python3 cc_full_experiment.py --help
+python3 pilot_cc_v3.py --help
+python3 -m py_compile cc_*.py pilot_cc_v3.py
+```
+
+<!-- figure: pending real measurement -->
+
 ## License
 
 Code is MIT-licensed ([LICENSE](LICENSE)). Not Contagion, Just Time releases the experiment scripts, results, and figures under
