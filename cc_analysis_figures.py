@@ -8,13 +8,11 @@ Reads cc_full_phase1_30reps.json (or specified input) and produces:
   Fig 3: Reliability diagrams at key rounds (round 1, round 10, round 20)
   Table 1: Full results matrix (LaTeX)
 """
-import json, sys, os
+import json, sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
-import matplotlib.ticker as mticker
 
 plt.rcParams.update({
     'font.family': 'serif', 'font.size': 10,
@@ -224,7 +222,7 @@ def table1_latex(data):
     tex = '\n'.join(lines)
     with open('cc_table1.tex', 'w') as f:
         f.write(tex)
-    print(f'  Table 1 (LaTeX) saved: cc_table1.tex')
+    print('  Table 1 (LaTeX) saved: cc_table1.tex')
     return tex
 
 def main():

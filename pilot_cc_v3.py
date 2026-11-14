@@ -11,7 +11,7 @@ Changes from v2 (which was negative):
 Hypothesis: An overconfident agent's (answer, confidence) patterns, when shown
 question-by-question to peers, anchor peers' own confidence calibration.
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 API_KEY = os.environ.get("DMXAPI_KEY", "YOUR_DMXAPI_KEY")
@@ -290,7 +290,7 @@ def main():
     args = p.parse_args()
     n = args.reps
     
-    print(f"CC Pilot v3 (per-Q anchoring + seeded miscalibration)")
+    print("CC Pilot v3 (per-Q anchoring + seeded miscalibration)")
     print(f"{MODEL} | {n} reps | {N_Q} q/agent/round | all agents share same questions\n")
     
     # C1: ISOLATED baseline, NO seeded miscalibration (all normal agents)
@@ -335,15 +335,15 @@ def main():
     print("\n--- GATE ---")
     if delta_ece > 0.03 and wp_ece < 0.05:
         print(f"  ✅ PASS: ΔECE={delta_ece:.4f} > 0.03, p={wp_ece:.4f} < 0.05")
-        print(f"  → Calibration contagion confirmed. Proceed to full 8-condition factorial.")
+        print("  → Calibration contagion confirmed. Proceed to full 8-condition factorial.")
     elif delta_ece > 0.02 and wp_ece < 0.10:
         print(f"  ⚠️  MARGINAL: ΔECE={delta_ece:.4f}, p={wp_ece:.4f}")
-        print(f"  → Weak signal. Consider extending or writing as exploratory.")
+        print("  → Weak signal. Consider extending or writing as exploratory.")
     else:
         print(f"  ❌ NEGATIVE: ΔECE={delta_ece:.4f}, p={wp_ece:.4f}")
         if delta_conf > 0.05:
             print(f"  BUT: Confidence is shifting (ΔConf={delta_conf:+.4f}) — may need different metric")
-        print(f"  → Abandon calibration contagion direction. Pivot.")
+        print("  → Abandon calibration contagion direction. Pivot.")
 
     out = f"cc_pilot_v3_{n}reps.json"
     with open(out,'w') as f:

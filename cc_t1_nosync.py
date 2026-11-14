@@ -11,7 +11,7 @@ Enables pure factor decomposition:
   Pure N effect = C3b - C1 (T=10 fixed, no sync)  
   Pure Sync effect = C3 - C3b (N=5, T=10 fixed)
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 import argparse as _ap

@@ -8,7 +8,7 @@ R2: C4_normal — SYNC with 5 normal agents (NO overconfident seed)
 Uses same infrastructure as cc_full_experiment.py.
 Checkpointed per rep. 30 reps each.
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 import argparse as _ap

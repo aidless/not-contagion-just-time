@@ -9,7 +9,6 @@ norm / correct。全部为确定值断言（RED→GREEN 可复现），不触网
 import os
 import sys
 
-import numpy as np
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))

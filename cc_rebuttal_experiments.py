@@ -7,7 +7,7 @@ Q5: missing factorial cell — N=3, T=10, SYNC + seed
 
 GPT-4o, 30 reps, checkpointed. ~15,000 total calls.
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 API_KEY = os.environ.get("DMXAPI_KEY", "")

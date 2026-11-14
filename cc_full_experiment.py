@@ -18,7 +18,7 @@ Usage:
   python cc_full_experiment.py --phase 1 --reps 30
   python cc_full_experiment.py --phase 1 --reps 30 --resume   (auto-resume)
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 API_KEY = os.environ.get("DMXAPI_KEY", "YOUR_DMXAPI_KEY")
@@ -241,7 +241,7 @@ def run_condition(cid, cfg, n_reps, questions, ckpt_file):
                         except Exception as e:
                             print(f"  ⚠️ {cid} r{rep}rnd{rnd}a{ai}: {e}", flush=True)
                             if "403" in str(e) and calls > 500:
-                                print(f"  🔴 Rate limit hit. Saving & aborting.", flush=True)
+                                print("  🔴 Rate limit hit. Saving & aborting.", flush=True)
                                 raise RuntimeError("RATE_LIMIT")
                             corrs.append(0.0); confs.append(0.5)
                             rnd_results.append((ai, qi_global, "ERR", 0.5, 0.0))
@@ -276,7 +276,7 @@ def run_condition(cid, cfg, n_reps, questions, ckpt_file):
         except RuntimeError as e:
             if "RATE_LIMIT" in str(e):
                 print(f"  🔴 {cid}: Rate limit at rep {rep+1}. {len(all_ece)} clean reps saved.")
-                print(f"  → Wait 5 min then re-run same command to resume.")
+                print("  → Wait 5 min then re-run same command to resume.")
                 break
             raise
     
@@ -345,7 +345,7 @@ def main():
     print(f"CC Full Experiment — Phase {args.phase}")
     print(f"{MODEL} | {n} reps/condition | {N_Q} q/agent/round")
     print(f"Conditions: {', '.join(conds_to_run)}")
-    print(f"Per-Q anchoring + seeded overconfident agent")
+    print("Per-Q anchoring + seeded overconfident agent")
     if args.dry_run:
         print("⚠️  DRY-RUN MODE")
     print()
@@ -381,7 +381,7 @@ def main():
     # Factor effects (C1 as baseline)
     if "C1" in results:
         c1 = np.array([rep[-1] for rep in results["C1"]["ece_per_rep"]])
-        print(f"\n--- Factor Effects (vs C1 baseline) ---")
+        print("\n--- Factor Effects (vs C1 baseline) ---")
         for cid in ["C2","C3","C4"]:
             if cid not in results: continue
             cx = np.array([rep[-1] for rep in results[cid]["ece_per_rep"]])
@@ -401,13 +401,13 @@ def main():
         E_T = np.mean(c2f) - np.mean(c1f)  # T main effect (at N=3)
         E_NxT = (np.mean(c4f)-np.mean(c3f)) - (np.mean(c2f)-np.mean(c1f))  # Interaction
         
-        print(f"\n--- Main Effects ---")
+        print("\n--- Main Effects ---")
         print(f"  E_N  (N: 3→5 at T=10): {E_N:+.4f}")
         print(f"  E_T  (T:10→20 at N=3): {E_T:+.4f}")
         print(f"  E_N×T (interaction):     {E_NxT:+.4f}")
     
     # Trajectories
-    print(f"\n--- ECE Trajectories ---")
+    print("\n--- ECE Trajectories ---")
     for cid in ["C1","C2","C3","C4"]:
         if cid in results:
             traj = results[cid]["ece_traj_mean"]

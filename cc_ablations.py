@@ -7,7 +7,7 @@ A2: Stateless Toggle — every 5 rounds toggle sync on/off (C3-like, 15 rounds)
 
 Both use same anchoring mechanism as full experiment.
 """
-import json, os, sys, time, re, urllib.request, urllib.error
+import json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 API_KEY = os.environ.get("DMXAPI_KEY", "YOUR_DMXAPI_KEY")
