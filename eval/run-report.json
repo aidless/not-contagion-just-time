@@ -1,0 +1,129 @@
+{
+ "total": 20,
+ "passed": 20,
+ "failed": 0,
+ "selftest": false,
+ "failed_by_axis": {},
+ "results": [
+  {
+   "id": "CC-01",
+   "axis": "metrics/ece",
+   "ok": true,
+   "detail": "0.0"
+  },
+  {
+   "id": "CC-02",
+   "axis": "metrics/ece",
+   "ok": true,
+   "detail": "0.4"
+  },
+  {
+   "id": "CC-03",
+   "axis": "metrics/ece",
+   "ok": true,
+   "detail": "1.0"
+  },
+  {
+   "id": "CC-04",
+   "axis": "metrics/brier-mce",
+   "ok": true,
+   "detail": "0.09999999999999999"
+  },
+  {
+   "id": "CC-05",
+   "axis": "metrics/brier-mce",
+   "ok": true,
+   "detail": "1.0"
+  },
+  {
+   "id": "CC-06",
+   "axis": "metrics/brier-mce",
+   "ok": true,
+   "detail": "0.15333333333333332"
+  },
+  {
+   "id": "CC-07",
+   "axis": "parsing/json",
+   "ok": true,
+   "detail": "42"
+  },
+  {
+   "id": "CC-08",
+   "axis": "parsing/json",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "CC-09",
+   "axis": "parsing/json",
+   "ok": true,
+   "detail": "50"
+  },
+  {
+   "id": "CC-10",
+   "axis": "answer/norm-correct",
+   "ok": true,
+   "detail": "1000"
+  },
+  {
+   "id": "CC-11",
+   "axis": "answer/norm-correct",
+   "ok": true,
+   "detail": "False"
+  },
+  {
+   "id": "CC-12",
+   "axis": "answer/norm-correct",
+   "ok": true,
+   "detail": "raised AttributeError"
+  },
+  {
+   "id": "CC-13",
+   "axis": "design/conditions",
+   "ok": true,
+   "detail": "{\"desc\": \"text/5/20/SYNC\", \"n_agents\": 5, \"n_rounds\": 20, \"seeded_miscal\": true, \"sync\": true}"
+  },
+  {
+   "id": "CC-14",
+   "axis": "design/conditions",
+   "ok": true,
+   "detail": "['C2', 'C3', 'C4']"
+  },
+  {
+   "id": "CC-15",
+   "axis": "design/conditions",
+   "ok": true,
+   "detail": "[30]"
+  },
+  {
+   "id": "CC-16",
+   "axis": "sync/message",
+   "ok": true,
+   "detail": "\n\n[上一轮同伴反馈]\n  Agent#1: 答案=2, 置信度=0.90 (✗错误)"
+  },
+  {
+   "id": "CC-17",
+   "axis": "sync/message",
+   "ok": true,
+   "detail": "False|Agent#1: 答案=2 (✗)"
+  },
+  {
+   "id": "CC-18",
+   "axis": "tests/declaration",
+   "ok": true,
+   "detail": "14"
+  },
+  {
+   "id": "CC-19",
+   "axis": "data/files",
+   "ok": true,
+   "detail": "Scripts only. No result JSONs, checkpoin"
+  },
+  {
+   "id": "CC-20",
+   "axis": "data/files",
+   "ok": true,
+   "detail": "GSM8K 题库 30 题；每 agent 每轮 5 题（N_Q=5）"
+  }
+ ]
+}

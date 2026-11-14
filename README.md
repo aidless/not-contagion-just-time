@@ -225,3 +225,36 @@ GitHub's license detector reports this repository as `NOASSERTION` because it re
 a single SPDX id per repository and this one carries two. The split is deliberate:
 the code stays permissively licensed so it can be reused, and the research material
 stays attributable so a citation is required.
+
+## 验收题库与复算
+
+`eval/cases.jsonl` 是 20 条可执行验收题，覆盖八个口径（校准指标 ECE、Brier/MCE、
+响应解析、答案归一与判等、C1–C4 条件配置、同伴反馈消息、`tests/` 声明条数、
+`README`/`PREREG` 的声明）。其中 18 条是 `expr`/`raises`，**全部真的 import 本仓库
+模块现算**（`cc_full_experiment`/`cc_ablations`/`cc_revision_experiments`/
+`cc_rebuttal_experiments`/`cc_t1_nosync`），或用 `ast` 真解析 `tests/test_cc.py`；
+剩下 2 条 `doc` 用正则在 `README.md`/`PREREG.md` 里核对声明口径。期望值不是抄文档，
+而是**跑出来的**：
+
+**验收阈值（写死，不接受「差不多」）**：`passed` 必须 ≥ 20 条（题库正好 20 条，等价于全过）；
+`--selftest` 必须正好 19/20——少于 19 说明篡改没生效，多于 19 说明期望值被改宽；
+两种模式的退出码必须为 0，缺一条即判不通过（23 分制的门按此给分）。
+
+```bash
+python3 eval/run_cases.py            # 20/20 cases passed
+python3 eval/run_cases.py --save     # 顺带把结果写进 eval/run-report.json
+python3 eval/run_cases.py --selftest # 篡改一条期望值，必须变红（证明这套题会失败）
+```
+
+**数字如何复算**：`eval/run-report.json` 里每条 case 都带 `id` / `axis` / `detail`，
+把 `detail` 与 `cases.jsonl` 的 `verify` 代码一起看，就能从源码复现该数字；
+`--save` 重跑一次即可重建整份报告，不需要手工抄数。注意 `calc_ece`/`calc_mce`
+的 bin 边界是 `[lo, hi)`，最后一个 bin 用 `[lo, hi]` —— `CC-03` 专门钉这个边界
+（conf=1.0 必须落进最后一个 bin，否则 ECE 会被算成 0）。
+
+**失败归因**：`run_cases.py` 不只报通过率，失败时按 `axis` 汇总（例如
+`metrics/ece: 1 条 —— CC-01`），直接指出是哪个口径坏了，而不是只给一个 pass_rate。
+
+**边界**：这套题只验证脚本侧的口径（指标实现、解析/归一、条件配置、同步消息格式），
+**不**验证论文数字——本仓没有提交结果 JSON，ECE/100,500 calls 无法从仓库复算
+（见上文 *What this doesn't claim / Limits*）。
