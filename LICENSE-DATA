@@ -1,11 +1,17 @@
-CC BY 4.0 — data, documents and evidence only
-================================================
+No dataset is committed in this repository
+==========================================
 
-The **code** in this repository is licensed under the MIT License (see LICENSE).
-The **data, documents, pre-registration records, figures and tables** are
-licensed under Creative Commons Attribution 4.0 International (CC BY 4.0):
+The code is under the MIT License (see LICENSE).
+
+This file used to say that data, documents, figures, and tables were released
+under CC BY 4.0. That claim does not match the tree: no result JSON, checkpoint,
+figure, or data table is committed. There is nothing in-tree for a CC BY 4.0
+grant to cover, apart from this notice.
+
+If the author later distributes the manuscript result files, those files are
+not covered by this repository's MIT license unless their own license says so.
+This checkout does not ship them, and "available upon request" is not a
+dataset release.
+
+Creative Commons Attribution 4.0 International is described at
 https://creativecommons.org/licenses/by/4.0/
-
-You are free to share and adapt these materials for any purpose, provided you
-give appropriate credit to the original author (aidless), link to the license,
-and indicate if changes were made.

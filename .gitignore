@@ -9,3 +9,9 @@ dist/
 build/
 eval_out/
 .DS_Store
+cc_full_ckpt_*.json
+cc_full_phase*.json
+fig1_ece_trajectories.pdf
+fig2_final_ece.pdf
+fig3_reliability.pdf
+cc_table1.tex

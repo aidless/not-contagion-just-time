@@ -18,7 +18,7 @@ Usage:
   python cc_full_experiment.py --phase 1 --reps 30
   python cc_full_experiment.py --phase 1 --reps 30 --resume   (auto-resume)
 """
-import json, os, time, re, urllib.request, urllib.error
+import hashlib, json, os, time, re, urllib.request, urllib.error
 import numpy as np
 
 API_KEY = os.environ.get("DMXAPI_KEY", "YOUR_DMXAPI_KEY")
@@ -121,7 +121,41 @@ def calc_brier(conf, acc):
     return float(np.mean((np.array(conf)-np.array(acc))**2))
 
 # ──────────────── API ────────────────
+# Set by main() for --dry-run. Default is the live client.
+_DRY_RUN = False
+
+def _pause(seconds):
+    """Live runs keep their pacing. Dry-run must stay offline and fast."""
+    if not _DRY_RUN:
+        time.sleep(seconds)
+
+def mock_llm(system, user, temp=0.7):
+    """Deterministic stand-in for one chat completion. No socket and no clock.
+
+    The digest is SHA-256 of the prompt, so the same call returns the same
+    JSON on every machine. This is a pipeline stub, not a model of contagion.
+    """
+    digest = hashlib.sha256(f"{temp:.6f}\n{system}\n{user}".encode("utf-8")).digest()
+    gold = None
+    for item in GSM8K:
+        if item["q"] in user:
+            gold = item["a"]
+            break
+    if gold is None:
+        answer = "0"
+    elif digest[0] < 160:
+        answer = gold
+    else:
+        answer = "0" if gold != "0" else "1"
+    if "极其自信" in system:
+        conf = 0.75 + 0.25 * (digest[1] / 255.0)
+    else:
+        conf = digest[1] / 255.0
+    return json.dumps({"answer": str(answer), "confidence": round(float(conf), 2)}, ensure_ascii=False)
+
 def api(system, user, temp=0.7):
+    if _DRY_RUN:
+        return mock_llm(system, user, temp)
     payload = {"model":MODEL,"messages":[{"role":"system","content":system},{"role":"user","content":user}],"temperature":temp,"max_tokens":200}
     data = json.dumps(payload).encode()
     for attempt in range(5):
@@ -235,7 +269,7 @@ def run_condition(cid, cfg, n_reps, questions, ckpt_file):
                             confs.append(conf)
                             rnd_results.append((ai, qi_global, ans, conf, is_correct))
                             calls += 1
-                            time.sleep(0.3)
+                            _pause(0.3)
                         except KeyboardInterrupt:
                             raise
                         except Exception as e:
@@ -271,7 +305,7 @@ def run_condition(cid, cfg, n_reps, questions, ckpt_file):
                 json.dump({"ece_per_rep":all_ece,"acc_per_rep":all_acc,"conf_per_rep":all_conf,"mce_per_rep":all_mce,"brier_per_rep":all_brier,"calls":calls}, f)
             
             print(f"  {cid} rep {rep+1}/{n_reps} | ECE={np.mean(rep_ece):.4f} Acc={np.mean(rep_acc):.3f} ✓", flush=True)
-            time.sleep(2.0)
+            _pause(2.0)
         
         except RuntimeError as e:
             if "RATE_LIMIT" in str(e):
@@ -326,6 +360,7 @@ def cohens_d(x,y):
 
 # ──────────────── Main ────────────────
 def main():
+    global _DRY_RUN
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--phase",type=int,default=1,help="Phase 1=C1-C4 text, 2=C5-C8 image (TBD)")
@@ -333,7 +368,14 @@ def main():
     p.add_argument("--conditions",default="all",help="Comma-separated: C1,C2,C3,C4 or 'all'")
     p.add_argument("--dry-run",action="store_true")
     args = p.parse_args()
-    
+    prev_dry = _DRY_RUN
+    _DRY_RUN = bool(args.dry_run)
+    try:
+        _run_main(args)
+    finally:
+        _DRY_RUN = prev_dry
+
+def _run_main(args):
     n = args.reps
     qs = GSM8K
     
@@ -348,6 +390,7 @@ def main():
     print("Per-Q anchoring + seeded overconfident agent")
     if args.dry_run:
         print("⚠️  DRY-RUN MODE")
+        print("DRY-RUN: offline deterministic mock LLM (no network)")
     print()
     
     results = {}
@@ -365,7 +408,10 @@ def main():
     
     # ──── Analysis ────
     print("="*70)
-    print("  RESULTS — Calibration Contagion Factorial")
+    if args.dry_run:
+        print("  RESULTS — dry-run mock (not a manuscript result)")
+    else:
+        print("  RESULTS — Calibration Contagion Factorial")
     print("="*70)
     
     # Final ECE per condition
@@ -376,7 +422,14 @@ def main():
         r = results[cid]
         acc_final = np.mean([rep[-1] for rep in r["acc_per_rep"]])
         conf_final = np.mean([rep[-1] for rep in r["conf_per_rep"]])
-        print(f"{cid:<6} {r['desc']:<28} {r['ece_final']:>10.4f} ± {np.std([rep[-1] for rep in r['ece_per_rep']],ddof=1):.2f} {r['ece_change']:>+9.4f} {acc_final:>7.3f} {conf_final:>7.3f}")
+        finals_ece = [rep[-1] for rep in r["ece_per_rep"]]
+        # One rep has no sample standard deviation. Do not call ddof=1 on it
+        # (NumPy warns and returns NaN either way).
+        if len(finals_ece) > 1:
+            spread = float(np.std(finals_ece, ddof=1))
+        else:
+            spread = float("nan")
+        print(f"{cid:<6} {r['desc']:<28} {r['ece_final']:>10.4f} ± {spread:.2f} {r['ece_change']:>+9.4f} {acc_final:>7.3f} {conf_final:>7.3f}")
     
     # Factor effects (C1 as baseline)
     if "C1" in results:
@@ -420,7 +473,8 @@ def main():
     print(f"\n✅ Saved: {out}")
     
     total_calls = sum(r["calls"] for r in results.values())
-    print(f"   Total API calls: {total_calls}")
+    call_label = "mock calls" if args.dry_run else "API calls"
+    print(f"   Total {call_label}: {total_calls}")
 
 if __name__=="__main__":
     main()
